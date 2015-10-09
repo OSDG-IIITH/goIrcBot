@@ -6,7 +6,9 @@ import ("net"
         "fmt"
         "net/textproto"
         "strings"
+        "functions"
       )
+
 type Bot struct{
         server string
         port string
@@ -27,6 +29,7 @@ func NewBot() *Bot {
                     conn: nil,
                     user: "blaze"}
 }
+
 func (bot *Bot) Connect() (conn net.Conn, err error){
   conn, err = net.Dial("tcp",bot.server + ":" + bot.port)
   if err != nil{
@@ -40,37 +43,43 @@ func (bot *Bot) Connect() (conn net.Conn, err error){
 func (bot *Bot) WriteMessage(message string){
   fmt.Fprintf(bot.conn, "PRIVMSG %s :%s\r\n", bot.channel, message)
 }
+
+func (bot *Bot) WriteMultMessage(vals ...string){
+	for _, value:=range vals{
+		bot.WriteMessage(value)
+	}
+}
+
 func (bot *Bot) Pong(server string){
   fmt.Fprintf(bot.conn, "PONG %s", server)
   fmt.Printf("PONG %s", server)
 }
+
 func (bot *Bot) EvaluateLine(line string){
+
   splitUp := strings.Split(line, ":")
   
   if len(splitUp) > 2 {
     name := strings.Split(splitUp[1], "!")
     if strings.HasPrefix(splitUp[2], "!teehee ") {
+
       flags := strings.Split(splitUp[2], " ")
+
       if flags[1] == "help" {
-        bot.WriteMessage(name[0]+": TEEHEEBOT : written in Golang.")
-        bot.WriteMessage(name[0]+": Current Functions: help, about")
-        bot.WriteMessage(name[0]+": USAGE: '!teehee <function> [flags]'") 
+      	bot.WriteMultMessage(functions.Help(name[0]))
       } else if flags[1] == "about" {
-        bot.WriteMessage(name[0]+": Open Source Developers Group @ IIIT - H")
-        bot.WriteMessage(name[0]+": Mailing List : https://groups.google.com/forum/?fromgroups#!forum/iiit-osdg")
-	bot.WriteMessage(name[0]+": Blog : http://iiitosdg.wordpress.com/")
-        bot.WriteMessage(name[0]+": IRC : Well, you guys are already here aren't you :P")
-        bot.WriteMessage(name[0]+": GitHub : https://github.com/OSDG-IIITH/")
-        bot.WriteMessage(name[0]+": Want to get a project forked under the github group? Register it at http://osdg.iiit.ac.in/github/")
-        bot.WriteMessage(name[0]+": Doing GSoC this summer? Check out http://osdg.iiit.ac.in/gsoc15/") 
-      } else { 
-      bot.WriteMessage(name[0]+": I didn't get that, try '!teehee help' ??")
+        bot.WriteMultMessage(functions.About(name[0]))
+      } else if flags[1] == "rules" {
+        bot.WriteMultMessage(functions.Rules(name[0]))
+      } else if flags[1] == "commands" {
+      	bot.WriteMultMessage(functions.Commands(name[0]))
+      } else if flags[1] == "pastebin" {
+      	bot.WriteMultMessage(functions.Pastebin(name[0]))
+      } else if flags[1] == "stories" {
+      	bot.WriteMultMessage(functions.Stories(name[0]))
+      } else {
+      	bot.WriteMessage(name[0]+": I didn't get that, try '!teehee help'")
       }
-      // INLINE GUIDES BE THE SHIZZ
-      // Adding functionality, use the template suggested below.
-      // else if flags[1] == "foobar" {
-      // Do some stuff
-      // }
     }
   }
   if strings.HasPrefix(splitUp[0], "PING") {
