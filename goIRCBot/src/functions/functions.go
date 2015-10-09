@@ -1,14 +1,13 @@
 package functions
 
-func About(name string) (string, string, string, string, string, string, string) {
+func About(name string) (string, string, string, string, string, string) {
 	val1:="Hello @"+name+", Welcome to the Open Source Developers Group @ IIIT - H"
 	val2:="Mailing List : https://groups.google.com/forum/?fromgroups#!forum/iiit-osdg"
 	val3:="Blog : http://iiitosdg.wordpress.com/"
 	val4:="IRC : Well, you guys are already here aren't you :P"
 	val5:="GitHub : https://github.com/OSDG-IIITH/"
-	val6:="Want to get a project forked under the github group? Register it at http://osdg.iiit.ac.in/github/"
-	val7:="Doing GSoC this summer? Check out http://osdg.iiit.ac.in/gsoc15/"
-	return val1, val2, val3, val4, val5, val6, val7
+	val6:="IIIT's results at GSoC last summer: http://osdg.iiit.ac.in/gsoc15/"
+	return val1, val2, val3, val4, val5, val6
 }
 
 func Commands(name string) (string, string, string, string, string, string, string, string) {
